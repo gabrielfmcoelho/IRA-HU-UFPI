@@ -7,7 +7,7 @@ Este projeto tem como objetivo análisar insights e avaliar a performance de dif
 ## Versionamento
 | Objeto | Versão | Data de Atualização |
 |--------|--------|---------------------|
-| Notebook | 1.0 | 11/12/2023 |
+| Notebook | 1.2 | 11/12/2023 |
 | WebApp | 1.0 | 12/12/2023 |
 
 ## Estrutura do Projeto
