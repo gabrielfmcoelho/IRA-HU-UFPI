@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <title>Inferencia de IRA</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="info-section">
+            <h1>
+                Prev
+                <span>
+                    INA
+                </span>
+            </h1>
+            <h2>Ferramenta de Inferência de<br>Insuficiência Renal Aguda com Machine Learning</h2>
+            <div class="subsection">
+                <h3>O que é Insuficiência Renal Aguda?</h3>
+                <p>A Insuficiência Renal Aguda (IRA) é uma condição clínica caracterizada pela perda súbita e abrupta da função renal, geralmente em horas ou dias.</p>
+                <p>Principais Consequências da IRA:</p>
+                <ul>
+                    <li>Acúmulo de toxinas no sangue</li>
+                    <li>Desequilíbrio de líquidos e eletrólitos</li>
+                    <li>Inchaço</li>
+                    <li>Hipertensão</li>
+                    <li>Convulsões</li>
+                    <li>Falência renal</li>
+                    <li>Morte</li>
+                </ul>
+            </div>
+            <div class="subsection">
+                <h3>O que é PrevINA?</h3>
+                <p>PrevINA é uma ferramenta inovadora desenvolvida por especialistas em medicina e machine learning. Ela utiliza um conjunto abrangente de dados para oferecer um diagnóstico precoce da IRA, uma condição grave que pode levar à falência renal e à morte.</p>
+                <p>Benefícios da Ferramenta:</p>
+                <ul>
+                    <li>Identificação de pacientes em risco</li>
+                    <li>Agilização do diagnóstico</li>
+                    <li>Melhoria do prognóstico</li>
+                </ul>
+            </div>
+            <div class="subsection line">
+                <div class="card">
+                    <div class="bg">
+                        <p>MAE da Creatinina</p>
+                        <h2>0.006</h2>
+                    </div>
+                    <div class="blob"></div>
+                </div>
+                <div class="card">
+                    <div class="bg">
+                        <p>Acuracia da IRA</p>
+                        <h2>+90%</h2>
+                    </div>
+                    <div class="blob"></div>
+                </div>
+                <div class="card">
+                    <div class="bg">
+                        <p>Recall da IRA</p>
+                        <h2>98%</h2>
+                    </div>
+                    <div class="blob"></div>
+                </div>
+            </div>
+            <p class="disclaimer">
+                A ferramenta PrevINA visa auxiliar profissionais de saúde. Os resultados possuem um grau de erro e devem ser avaliados com cuidado.
+            </p>
+            <div class="footer">
+                <p>Desenvolvido por:</p>
+                <ul>
+                    <li><p>Antonia Márcia <a href="">Lattes</a></p></li>
+                    <li><p>Ginivaldo Victor <a href="">Lattes</a></p></li>
+                    <li><p>Francisco Luciani <a href="">Lattes</a>, <a href="">LinkedIn</a></p></li>
+                    <li><p>Gabriel Coelho <a href="">Lattes</a>, <a href="">GitHub</a>, <a href="">LinkedIn</a>, <a href="">Medium</a>, <a href="">Substack</a>, <a href="">Instagram</a></p></li>
+                </ul>
+                <p>Projeto disponível no <a href="">GitHub</a></p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="logos">
+                <img src="{{ url_for('static', filename='images/hu.png') }}" alt="Logo HU-UFPI">
+                <img src="{{ url_for('static', filename='images/ebserh.png') }}" alt="Logo EBSERH">
+            </div>
+            <form action="#" method="post" id="ari-form">
+                <h2>Informações do(a) Paciente</h2>
+                <p>Para utilizar o processo de inferência, preencha todos os campos abaixo:</p>
+                <div class="form-group">
+                    <label for="age">Idade:</label>
+                    <input type="text" id="age" name="age" required>
+                </div>
+                <div class="form-group">
+                    <label for="creatinine">Valor creatinina (atual):</label>
+                    <input type="text" id="creatinine" name="creatinine" required>
+                </div>
+                <div class="form-group">
+                    <label for="heart-rate">Taxa do coração:</label>
+                    <input type="text" id="heart-rate" name="heart-rate" required>
+                </div>
+                <button type="submit">Inferir IRA</button>
+            </form>
+        </div>
+    </div>
+
+    {% if show_result and ira: %}
+    <div class="result-card"> 
+        <div class="header"> 
+            <div class="image">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><g stroke-width="0" id="SVGRepo_bgCarrier"></g><g stroke-linejoin="round" stroke-linecap="round" id="SVGRepo_tracerCarrier"></g><g id="SVGRepo_iconCarrier"> <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="#000000" d="M20 7L9.00004 18L3.99994 13"></path> </g></svg>
+            </div> 
+            <div class="content">
+                <span class="title">Sem indicativo de IRA</span> 
+                <p class="message">Foi inferido o valor de 0.8 mg/dL de Creatinina para as proximas 48 horas. O valor inferido não ultrapassa o limiar de variação de 30% da Creatinina atual, dessa forma não há indicativo de IRA.</p>
+            </div> 
+            <div class="actions">
+                <button type="button" class="history">Entendo</button> 
+            </div>  
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>

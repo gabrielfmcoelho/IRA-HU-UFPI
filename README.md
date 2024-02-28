@@ -2,13 +2,13 @@
 
 ## Descrição do Projeto
 
-Este projeto tem como objetivo análisar insights e avaliar a performance de diferentes modelos de machine learning para prever a insuficiencia renal aguda (IRA) de pacientes internados no Hospital Universitário da Universidade Federal do Piauí (HU-UFPI) no setor de cardiologia entre os anos de 2021 e 2022.
+Este projeto tem como objetivo o desenvolvimento de um modelo de Aprendizado de Máquina Supervisionado para inferência de Insuficiência Renal Aguda (IRA) de pacientes internados no Hospital Universitário da Universidade Federal do Piauí (HU-UFPI) no setor de cardiologia entre os anos de 2018 e 2022. Abordando aquisição, tratamento, análise, desenvolvimento, avaliação e implementação como WebApp.
 
 ## Versionamento
 | Objeto | Versão | Data de Atualização |
 |--------|--------|---------------------|
-| Notebook | 1.2 | 11/12/2023 |
-| WebApp | 1.0 | 12/12/2023 |
+| Notebook | 2.5 | 27/02/2024 |
+| WebApp | 1.5 | 27/02/2024 |
 
 ## Estrutura do Projeto
 
