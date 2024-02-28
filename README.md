@@ -1,3 +1,5 @@
+![Insuficiência Renal Aguda HU UFPI](data/Inferencia%20%2B%20Web%20App.png)  
+
 # TITULO DO PROJETO
 
 ## Descrição do Projeto
