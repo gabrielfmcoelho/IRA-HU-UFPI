@@ -1,6 +1,9 @@
-![Insuficiência Renal Aguda HU UFPI](data/Inferencia%20%2B%20Web%20App.png)  
+![Banner Insuficiência Renal Aguda HU UFPI](images/Inferencia%20%2B%20Web%20App.png)  
 
-# TITULO DO PROJETO
+- [PT-BR](#pt-br-insuficiência-real-aguda-ira-em-pacientes-internados-pelo-setor-de-cardiologia-do-hu-ufpi)
+- [EN](#en-acute-real-insufficiency-arf-in-patients-admitted-to-the-cardiology-department-of-hu-ufpi)
+
+# PT-BR: Insuficiência Real Aguda (IRA) em pacientes internados pelo setor de Cardiologia do HU-UFPI
 
 ## Descrição do Projeto
 
@@ -94,3 +97,4 @@ O Web App estará disponível no endereço `http://localhost:8080/`.
 
 Esta projeto foi desenvolvido como parte do projeto __________, encabeçada pela residente _______, sob orientação do prof. Dr. ______. Os dados utilizados são de propriedade do Hospital Universitário da UFPI e foram cedidos para o desenvolvimento desta análise.
 
+# EN: Acute Real Insufficiency (ARF) in patients admitted to the Cardiology department of HU-UFPI
