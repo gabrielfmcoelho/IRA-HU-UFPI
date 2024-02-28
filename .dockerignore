@@ -1,0 +1,8 @@
+reports/
+queries/
+notebooks/
+images/
+.vscode/
+.idea/
+__pycache__/
+.github/

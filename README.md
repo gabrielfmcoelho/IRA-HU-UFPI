@@ -1,4 +1,4 @@
-![Banner Insuficiência Renal Aguda HU UFPI](./images/banner.png)  
+![Banner Insuficiência Renal Aguda HU UFPI](images/banner.png)  
 
 - [PT-BR](#pt-br-insuficiência-real-aguda-ira-em-pacientes-internados-pelo-setor-de-cardiologia-do-hu-ufpi)
 - [EN](#en-acute-real-insufficiency-arf-in-patients-admitted-to-the-cardiology-department-of-hu-ufpi)
