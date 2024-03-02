@@ -16,7 +16,7 @@ def fill_collection_of_type_elimination( # Função para preencher valor da cole
     :param value_column: Value column
     :return: Dataframe with value column filled
     """
-    df = df.loc[df[type_column].isin(elimination_types), value_column] = 1
+    df.loc[df[type_column].isin(elimination_types), value_column] = 1
     return df
 
 def drop_null_values_that_are_not_type_elimination( # Função para remover linhas com valor nulo que não sejam do tipo eliminação
@@ -40,15 +40,12 @@ def keep_only_selected_types( # Função para manter apenas os tipos de controle
     df: pd.DataFrame,
     type_column: str='tipo_controle',
     values_to_keep: list=[
-        'Eliminação urinária',
-        'Fezes',
         'Pressão Arterial Sistólica', # ok
         'Pressão Arterial Diastólica', # ok
         'Frequência Cardíaca', # ok
-        'Glicemia Capilar',
-        'Temperatura Axilar',
         'Frequência Respiratória', # ok
-        'Vômitos'],
+        'Temperatura  Axilar', # "ok" atenção ao duplo espaço entre as palavras
+        ],
     ) -> pd.DataFrame:
     """
     Function to keep only selected types
@@ -63,7 +60,7 @@ def pivot( # Função para pivotar o dataframe
     df: pd.DataFrame,
     index_columns: list=['uid_prontuario_dt_internacao', 'prontuario', 'dt_internacao', 'dt_controle_date', 'dt_controle', 'alta'],
     target_column: str='tipo_controle',
-    values_columns: list=['grupo_controle', 'valor_controle', 'diff_dt_controle_dt_internacao', 'diff_entre_dt_controle_1', 'diff_entre_dt_controle_2', 'varicao_valor_controle_1', 'varicao_valor_controle_2'],
+    values_columns: list=['grupo_controle', 'valor_controle', 'diff_dt_controle_dt_internacao', 'diff_entre_dt_controle_1', 'diff_entre_dt_controle_2', 'variacao_valor_controle_1', 'variacao_valor_controle_2'],
     aggfunc: str='max'
     ) -> pd.DataFrame:
     """

@@ -14,7 +14,7 @@ def parse_datetime( # Função para converter colunas de data e hora para o form
     :return: Dataframe with parsed datetime columns
     """
     df_column = df_column.astype(str)
-    df_column = df_column.apply(lambda x: x[:19] if len(x) > 19 else x) # Remove milisegundos, se houver
+    df_column = df_column.apply(lambda x: x[:19] if len(x) > 19 else x) # Remove milissegundos, se houver
     return pd.to_datetime(df_column, format='%Y-%m-%d %H:%M:%S') # Converte para datetime no formato Ano-Mes-Dia Hora:Minuto:Segundos
 
 def split_datetime( # Função para extrair data da coluna de data e hora
@@ -69,7 +69,7 @@ def keep_only_valid_records( # Função para eliminar registros de eventos que o
     df: pd.DataFrame,
     first: str,
     operation: str,
-    second: str or int,
+    second: str | int,
     second_is_constant: bool=False,
     patient: str='prontuario',
     dt_hospitalization: str='dt_internacao'
@@ -152,18 +152,18 @@ def value_variation_between_collections( # Função para calcular a variação, 
     :param uid: Unique identifier column
     :param collection: Collection column
     :param periods: Number of periods to calculate the variation
-    :return: Dataframe with variation columns, output name will be 'varicao_{collection}_{period}'
+    :return: Dataframe with variation columns, output name will be 'variacao_{collection}_{period}'
     """
     df = df.sort_values(by=[uid]+group_by_tags+[dt_collection], ascending=True).reset_index(drop=True)
     for period in range(1, periods+1):
-        output = f'varicao_{collection}_{period}'
+        output = f'variacao_{collection}_{period}'
         denominator = df.groupby([uid]+group_by_tags)[collection].shift(period)
         df[output] = np.where(denominator.notna(), (df[collection] - denominator) / (denominator + 1e-8), np.nan)
     return df
 
 def drop_variation_and_diff_null_values(
     df: pd.DataFrame,
-    starting_prefix: list=['diff_', 'varicao_', 'apresentara_'],
+    starting_prefix: list=['diff_', 'variacao_'],
     ) -> pd.DataFrame:
     """
     Function to drop null values from variation and diff columns

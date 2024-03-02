@@ -31,7 +31,7 @@ def identify_hospitalization_time( # Função para identificar o número de inte
     :param output: Output column
     :return: Dataframe with hospitalization time column
     """
-    # TODO: LIMPAR CODIGOS COMENTADOS
+    # TODO: LIMPAR CÓDIGOS COMENTADOS
     df[output] = df.groupby(uid)[hospitalization].rank(method='dense').astype(int)
     #df['n_internacoes'] = df.groupby(['prontuario', 'uid_prontuario_internacao']).cumcount() + 1
     return df
@@ -53,7 +53,7 @@ def identify_collection_time( # Função para identificar o número de coletas d
     df[output] = df.groupby(uid)[dt_collection].cumcount()+1 # TODO: CUMCOUNT OU RANK?
     return df
 
-def ira( # Função para identificar IRA de acordo com as regras de validação em pelo menos um dos periodos
+def ira( # Função para identificar IRA de acordo com as regras de validação em pelo menos um dos períodos
     row: pd.Series,
     periods: int,
     ira_column: str='ira',
@@ -65,19 +65,22 @@ def ira( # Função para identificar IRA de acordo com as regras de validação 
     :param ira_column: IRA column
     :return: 1 if IRA occurred in at least one of the periods, 0 otherwise
     """
-    for period in range(1, periods+1): # Verifica se a IRA ocorreu em pelo menos um dos periodos e agrega em uma unica coluna
+    label = np.nan # Valor padrão para quando não temos a informação para rotular
+    for period in range(1, periods+1): # Verifica se a IRA ocorreu em pelo menos um dos períodos e agrega em uma única coluna, inicializando em 1 para desconsiderar o período de 24h
         if row[f'{ira_column}_{period}'] == 1:
-            return 1
-    return 0
+            label = 1
+        elif row[f'{ira_column}_{period}'] == 0:
+            label = 0
+    return label
 
-def validation( # Função para rotular a ocorrencia de IRA
+def validation( # Função para rotular a ocorrência de IRA
     row: pd.Series, 
     period: int, 
     time_diff: int,
     time_diff_threshold: int, 
     value_threshold: float,
     time_diff_collection_column: str='diff_entre_dt_creatinina',
-    value_variation_collection_column: str='varicao_valor_creatinina',
+    value_variation_collection_column: str='variacao_valor_creatinina',
     ) -> int:
     """
     Function to label the IRA occurrence according to validation rules
@@ -92,16 +95,18 @@ def validation( # Função para rotular a ocorrencia de IRA
     """
     if (
         (row[f'{time_diff_collection_column}_{period}'] >= pd.Timedelta(hours=time_diff)) and  # limite inferior de tempo entre as coletas
-        (row[f'{time_diff_collection_column}_{period}'] < pd.Timedelta(hours=time_diff_threshold)) and # limite superior de tempo entre as coletas
-        (abs(row[f'{value_variation_collection_column}_{period}']) >= value_threshold) # limite de variação do valor entre as coletas
+        (row[f'{time_diff_collection_column}_{period}'] < pd.Timedelta(hours=time_diff_threshold)) # limite superior de tempo entre as coletas
     ):
-        return 1 # IRA
+        if (abs(row[f'{value_variation_collection_column}_{period}']) >= value_threshold): # limite de variação do valor entre as coletas
+            return 1 # IRA
+        else:
+            return 0 # Não IRA
     else:
-        return 0 # Não IRA
+        return np.nan # Não atendeu aos critérios de intervalo de tempo entre as coletas
 
-def identify_ira( # Função para identificar ocorrencia de IRA de acordo com as regras de validação
+def identify_ira( # Função para identificar ocorrência de IRA de acordo com as regras de validação
     df: pd.DataFrame,
-    periods: int=1 # Janela de tempo de 2 coletas
+    periods: int=1 # Janela de tempo de (periods+1) coletas -> 2 coletas
     ) -> pd.DataFrame: 
     """
     Function to identify IRA occurrence according to validation rules
@@ -111,19 +116,19 @@ def identify_ira( # Função para identificar ocorrencia de IRA de acordo com as
     """
     periods_rules = {
         1: {
-            "name" : "24h",
-            "time_diff": 20, # No HU-UFPI o exame que representa 24 horas ocorre a partir de 20 horas está sendo considerado o limite de no maximo 40 horas de diferença entre as coletas
+            "name" : "24h", # IREMOS !! DESCONSIDERAR !! O PERÍODO DE 24 HORAS PARA IDENTIFICAR IRA
+            "time_diff": 20, # No HU-UFPI o exame que representa 24 horas ocorre a partir de 20 horas está sendo considerado o limite de no máximo 40 horas de diferença entre as coletas
             "time_diff_threshold": 40,
             "value_threshold": 0.3,
         },
         2: {
             "name" : "48h",
-            "time_diff": 40, # No HU-UFPI o exame que representa 48 horas ocorre a partir de 40 horas está sendo considerado o limite de no maximo 72 horas de diferença entre as coletas
+            "time_diff": 40, # No HU-UFPI o exame que representa 48 horas ocorre a partir de 40 horas está sendo considerado o limite de no máximo 72 horas de diferença entre as coletas
             "time_diff_threshold": 72,
             "value_threshold": 0.3,
         }
     }
-    for period in range(1, periods+1):
+    for period in range(1, periods+1): # Iniciando em 1 para desconsiderar o período de 24h
         df[f'ira_{period}'] = df.apply(lambda x: validation(x, period, periods_rules[period+1]['time_diff'], periods_rules[period+1]['time_diff_threshold'], periods_rules[period]['value_threshold']), axis=1)
     df['ira'] = df.apply(lambda x: ira(x, periods=periods), axis=1)
     return df
@@ -149,7 +154,12 @@ def label_target( # Função para rotular a feature alvo designada
         'int': int
     }
     output = f'apresentara_{target}'
-    df[output] = df.groupby(uid)[target].shift(-1)
+    df[output] = df.groupby(uid)[target].shift(-1) # Rotulando a feature alvo com resultado de 1 período a frente
+    if target == 'valor_creatinina':
+        df['future_date'] = df.groupby(uid)['dt_creatinina'].shift(-1) # Rotulando a distancia temporal da feature alvo
+        df['diff_today_future'] = df['future_date'] - df['dt_creatinina'] # calculando a distancia temporal da feature alvo
+        df[output] = df.apply(lambda x: x[output] if x[output] != np.nan and x['diff_today_future'] < pd.Timedelta(hours=40) else np.nan, axis=1) # Permite apenas rotular a feature alvo se a distancia temporal for menor que 40 horas
+        df.drop(columns=['future_date', 'diff_today_future'], inplace=True)
     if fill:
         df[output] = df[output].fillna(fill)
     if output_type:
