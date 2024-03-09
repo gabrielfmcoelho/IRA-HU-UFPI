@@ -1,4 +1,5 @@
 from pandas import DataFrame, cut
+from sklearn.metrics import roc_curve, auc, confusion_matrix
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -48,7 +49,6 @@ def plot_boxplot(df: DataFrame, column: str, title_reference: str = None, min_ma
     ax.text(0.05, 0.25, f'Max: {df[column].max()}', transform=ax.transAxes, fontsize=10, verticalalignment='top')
     fig.show()
 
-# function to plot line chart with count of records by date
 def plot_line_chart_count_by_date(df: DataFrame, date_column: str, y_column: str = None, title: str = None) -> None:
     """
     Function to plot a line chart with count of records by date
@@ -101,7 +101,6 @@ def plot_histogram(df: DataFrame, column: str, title: str = None) -> None:
     """
     title = title if title else column
     df[column].plot(kind='hist', bins=10, figsize=(10, 4))
-    # set y-axis label
     plt.ylabel('Frequência')
     plt.title(title)
     plt.show()
@@ -109,9 +108,6 @@ def plot_histogram(df: DataFrame, column: str, title: str = None) -> None:
 def plot_feature_importances(importances, features):
     plt.figure(figsize=(10, 8))
     plt.barh(range(len(features)), importances, align='center')
-    # sort for better visualization
-    #indices = np.argsort(importances)
-    #plt.yticks(range(len(features)), [features[i] for i in indices])
     plt.yticks(range(len(features)), features)
     plt.xlabel('Importância da feature')
     plt.ylabel('Feature')
@@ -120,11 +116,35 @@ def plot_feature_importances(importances, features):
 
 def plot_scatter_real_vs_pred(y_real, y_pred, title='Real vs Predito', xlabel='Real', ylabel='Predito'):
     plt.figure(figsize=(10, 4))
-    # real as a line in gray
-    # predicted as a scatter with color scale for the distance to the line
     plt.scatter(y_real, y_pred, c=np.abs(y_real - y_pred), cmap='coolwarm', s=10)
     plt.plot([min(y_real), max(y_real)], [min(y_real), max(y_real)], 'k--', lw=2)
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+    plt.show()
+
+def roc_curve_plot(y_true, y_pred, title='Curva ROC', xlabel='Taxa de Falso Positivo', ylabel='Taxa de Verdadeiro Positivo'):
+    plt.figure(figsize=(10, 4))
+    fpr, tpr, thresholds = roc_curve(y_true, y_pred)
+    plt.plot(fpr, tpr)
+    auc_value = auc(fpr, tpr)
+    plt.text(0.85, 0.03, f'AUC: {auc_value:.2f}', fontsize=8)
+    plt.plot([0, 1], [0, 1], linestyle='--')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.show()
+
+def plot_confusion_matrix(y_true, y_pred, title='Matriz de confusão', cmap='Blues'):
+    plt.figure(figsize=(10, 4))
+    sns.heatmap(confusion_matrix(y_true, y_pred), annot=True, cmap=cmap, fmt='d')
+    plt.xlabel('Predito')
+    plt.ylabel('Real')
+    plt.title(title)
+    plt.show()
+
+def plot_specificity_pie_chart(tn: int, fp: int, title: str = "Especificidade da inferência de IRA"):
+    plt.figure(figsize=(10, 4))
+    plt.title(title)
+    plt.pie([tn, fp], labels=['IRA', 'Falso Negativo'], autopct='%1.1f%%', startangle=140, colors=['LightBlue', '#919999'])
     plt.show()
