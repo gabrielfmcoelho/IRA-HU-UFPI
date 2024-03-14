@@ -31,16 +31,16 @@ jobs:
 
       - name: Build Docker image
         run: |-
-          docker build --tag gcr.io/$GCP_PROJECT_ID/resistracker-api:${{ github.sha }} .
+          docker build --tag gcr.io/$GCP_PROJECT_ID/previra:${{ github.sha }} .
 
       - name: Push Docker image
         run: |-
-          docker push gcr.io/$GCP_PROJECT_ID/resistracker-api:${{ github.sha }}
+          docker push gcr.io/$GCP_PROJECT_ID/previra:${{ github.sha }}
 
       - name: Deploy prod version to Cloud Run
         run: |
-          gcloud run deploy resistracker-api \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/resistracker-api:${{ github.sha }} \
+          gcloud run deploy previra \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/previra:${{ github.sha }} \
             --platform managed \
             --region southamerica-east1 \
             --allow-unauthenticated \
