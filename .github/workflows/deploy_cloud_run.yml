@@ -3,7 +3,7 @@ name: Deploy PROD version to Cloud Run
 on:
   push:
     branches:
-      - main
+      - master
     
 env:
   PORT: 5000
