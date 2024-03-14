@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
-    <title>PrevINA</title>
+    <title>PrevIRA</title>
 </head>
 
 <body>
@@ -16,13 +16,13 @@
             <h1>
                 Prev
                 <span>
-                    INA
+                    IRA
                 </span>
             </h1>
-            <h2>Ferramenta de Inferência de<br>Insuficiência Renal Aguda com Machine Learning</h2>
+            <h2>Ferramenta de Inferência de<br>Injúria Renal Aguda com Machine Learning</h2>
             <div class="subsection">
-                <h3>O que é Insuficiência Renal Aguda?</h3>
-                <p>A Insuficiência Renal Aguda (IRA) é uma condição clínica caracterizada pela perda súbita e abrupta da função renal, geralmente em horas ou dias.</p>
+                <h3>O que é Injúria Renal Aguda?</h3>
+                <p>A Injúria Renal Aguda (IRA) é uma condição clínica caracterizada pela perda súbita e abrupta da função renal, geralmente em horas ou dias.</p>
                 <p>Principais Consequências da IRA:</p>
                 <ul>
                     <li>Acúmulo de toxinas no sangue</li>
@@ -35,40 +35,69 @@
                 </ul>
             </div>
             <div class="subsection">
-                <h3>O que é PrevINA?</h3>
-                <p>PrevINA é uma ferramenta desenvolvida para unir medicina e machine learning. Ela utiliza o modelo de aprendizado de maquina supervisionado "ExtraTreesRegressor" com dados curados da base do HU-UFPI para oferecer auxilio no diagnóstico precoce da IRA.</p>
+                <h3>O que é PrevIRA ?</h3>
+                <p>PrevIRA é uma ferramenta desenvolvida para unir medicina e aprendizado de maquina. A ferramenta faz uso de modelos de aprendizado de maquina supervisionados como "ExtraTreesRegressor" e "XGBoost", com dados curados da base do HU-UFPI, para oferecer auxilio no diagnóstico precoce da IRA.</p>
                 <p>Benefícios da Ferramenta:</p>
                 <ul>
                     <li>Identificação de pacientes em risco</li>
-                    <li>Agilização do diagnóstico</li>
+                    <li>Agilidade para diagnóstico</li>
                     <li>Melhoria do prognóstico</li>
                 </ul>
             </div>
-            <div class="subsection line">
-                <div class="card">
-                    <div class="bg">
-                        <p>MAE da Creatinina</p>
-                        <h2>0.006</h2>
+            <div class="subsection">
+                <h3>Modelo A: Regressão + Heurística</h3>
+                <div class="line">
+                    <div class="card">
+                        <div class="bg">
+                            <p>R2</p>
+                            <h2>0.98</h2>
+                        </div>
+                        <div class="blob"></div>
                     </div>
-                    <div class="blob"></div>
-                </div>
-                <div class="card">
-                    <div class="bg">
-                        <p>Acuracia da IRA</p>
-                        <h2>+90%</h2>
+                    <div class="card">
+                        <div class="bg">
+                            <p>Especifidade</p>
+                            <h2>0.92</h2>
+                        </div>
+                        <div class="blob"></div>
                     </div>
-                    <div class="blob"></div>
-                </div>
-                <div class="card">
-                    <div class="bg">
-                        <p>Recall da IRA</p>
-                        <h2>98%</h2>
+                    <div class="card">
+                        <div class="bg">
+                            <p>Acurácia</p>
+                            <h2>0.98</h2>
+                        </div>
+                        <div class="blob"></div>
                     </div>
-                    <div class="blob"></div>
-                </div>
+                </div>    
+            </div>
+            <div class="subsection">
+                <h3>Modelo B: Classificação</h3>
+                <div class="line">
+                    <div class="card">
+                        <div class="bg">
+                            <p>Sensibilidade</p>
+                            <h2>0.97</h2>
+                        </div>
+                        <div class="blob"></div>
+                    </div>
+                    <div class="card">
+                        <div class="bg">
+                            <p>Especifidade</p>
+                            <h2>0.87</h2>
+                        </div>
+                        <div class="blob"></div>
+                    </div>
+                    <div class="card">
+                        <div class="bg">
+                            <p>Acurácia</p>
+                            <h2>0.97</h2>
+                        </div>
+                        <div class="blob"></div>
+                    </div>
+                </div> 
             </div>
             <p class="disclaimer">
-                A ferramenta PrevINA visa auxiliar profissionais de saúde. Os resultados possuem um grau de erro e devem ser avaliados com cuidado.
+                A ferramenta PrevIRA visa auxiliar profissionais de saúde. Os resultados possuem um grau de erro e devem ser avaliados com cuidado.
             </p>
             <div class="footer">
                 <p>Desenvolvido por:</p>
@@ -94,18 +123,25 @@
             <form action="#" method="post" id="ari-form">
                 <h2>Informações do(a) Paciente</h2>
                 <p>Para utilizar o processo de inferência, preencha todos os campos abaixo:</p>
+                <br>
+
+                {% for feature, feature_data in data.features_dict.items() %}
                 <div class="form-group">
-                    <label for="age">Idade:</label>
-                    <input type="text" id="age" name="age" placeholder="Digite aqui a idade..." oninvalid="this.setCustomValidity('Por favor, preencha a idade do paciente')" required>
+                    <label for="{{ feature }}">{{ feature_data.label }}:</label>
+                    <input type="{{ feature_data.type }}" id="{{ feature }}" name="{{ feature }}" step="any" lang="pt-br" required>
                 </div>
+                {% endfor %}
+
+                <br><label>Modelo:</label><br>
                 <div class="form-group">
-                    <label for="creatinine">Valor creatinina (atual):</label>
-                    <input type="text" id="creatinine" name="creatinine" required>
+                    {% for option, option_value in data.radio_buttons.items() %}
+                    <div class="radio-option">
+                        <label for="{{ option }}">{{ option }}</label><br>
+                        <input type="radio" id="{{ option }}" name="model" value="{{ option_value }}">
+                    </div>
+                    {% endfor %}
                 </div>
-                <div class="form-group">
-                    <label for="heart-rate">Taxa do coração:</label>
-                    <input type="text" id="heart-rate" name="heart-rate" required>
-                </div>
+                        
                 <button type="submit">Inferir IRA</button>
             </form>
         </div>

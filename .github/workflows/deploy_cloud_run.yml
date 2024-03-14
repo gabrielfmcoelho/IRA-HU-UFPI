@@ -1,13 +1,47 @@
-name: Deploy on Cloud Run
+name: Deploy PROD version to Cloud Run
 
 on:
   push:
     branches:
-      - master
+      - main
+    
+env:
+  PORT: 5000
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout
-          uses: actions/checkout@v2
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - id: "auth"
+        uses: google-github-actions/auth@v1.1.1
+        with:
+          credentials_json: "${{ secrets.GCP_SA_KEY }}"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Authorize Docker with gcloud
+        run: gcloud auth configure-docker -q
+
+      - name: Build Docker image
+        run: |-
+          docker build --tag gcr.io/$GCP_PROJECT_ID/resistracker-api:${{ github.sha }} .
+
+      - name: Push Docker image
+        run: |-
+          docker push gcr.io/$GCP_PROJECT_ID/resistracker-api:${{ github.sha }}
+
+      - name: Deploy prod version to Cloud Run
+        run: |
+          gcloud run deploy resistracker-api \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/resistracker-api:${{ github.sha }} \
+            --platform managed \
+            --region southamerica-east1 \
+            --allow-unauthenticated \
+            --port $PORT

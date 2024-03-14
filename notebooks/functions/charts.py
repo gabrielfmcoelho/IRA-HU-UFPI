@@ -124,15 +124,17 @@ def plot_scatter_real_vs_pred(y_real, y_pred, title='Real vs Predito', xlabel='R
     plt.show()
 
 def roc_curve_plot(y_true, y_pred, title='Curva ROC', xlabel='Taxa de Falso Positivo', ylabel='Taxa de Verdadeiro Positivo'):
-    plt.figure(figsize=(10, 4))
     fpr, tpr, thresholds = roc_curve(y_true, y_pred)
-    plt.plot(fpr, tpr)
-    auc_value = auc(fpr, tpr)
-    plt.text(0.85, 0.03, f'AUC: {auc_value:.2f}', fontsize=8)
-    plt.plot([0, 1], [0, 1], linestyle='--')
+    roc_auc = auc(fpr, tpr)
+    plt.figure(figsize=(10, 4))
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.05])
+    plt.ylim([0.0, 1.05])
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
+    plt.legend(loc="lower right")
     plt.show()
 
 def plot_confusion_matrix(y_true, y_pred, title='Matriz de confusão', cmap='Blues'):
@@ -146,5 +148,5 @@ def plot_confusion_matrix(y_true, y_pred, title='Matriz de confusão', cmap='Blu
 def plot_specificity_pie_chart(tn: int, fp: int, title: str = "Especificidade da inferência de IRA"):
     plt.figure(figsize=(10, 4))
     plt.title(title)
-    plt.pie([tn, fp], labels=['IRA', 'Falso Negativo'], autopct='%1.1f%%', startangle=140, colors=['LightBlue', '#919999'])
+    plt.pie([tn, fp], labels=['IRA Identificada', 'IRA Não Identificada'], autopct='%1.1f%%', startangle=140, colors=['LightBlue', '#919999'])
     plt.show()
