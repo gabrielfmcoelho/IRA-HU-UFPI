@@ -107,9 +107,6 @@ def predict(
 
     return render_template('index.html', ira=True, show_result=True, data=data)
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
 def preprocess_data(input_data):
     print(input_data)
     return pd.DataFrame(input_data, index=[0])
@@ -124,4 +121,9 @@ def make_prediction(model_path, input_data):
     # make a prediction
     prediction = model.predict(input_data)
     return prediction
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
+
 
